@@ -160,7 +160,7 @@ class CommentListCreateView(generics.ListCreateAPIView):
             Comment.objects.filter(post_id=post_id, parent=None)
             .select_related("user")
             .prefetch_related("replies")
-        )
+        ).order_by("-created_at")
 
     def perform_create(self, serializer):
         post_id = self.kwargs.get("post_id")
@@ -206,7 +206,6 @@ class BookmarkToggleView(APIView):
             openapi.Parameter(
                 "post_id",
                 openapi.IN_PATH,
-                description="ID of the post to bookmark/unbookmark",
                 type=openapi.TYPE_INTEGER,
             )
         ],

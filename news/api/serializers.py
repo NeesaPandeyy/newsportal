@@ -3,6 +3,7 @@ from rest_framework import serializers
 from taggit.serializers import TaggitSerializer, TagListSerializerField
 
 from news.models import Bookmark, Category, Comment, CustomTag, NewsPost
+from users.api.serializers import UserSerializer
 
 
 class CustomTagSerializer(serializers.ModelSerializer):
@@ -18,7 +19,7 @@ class RecursiveField(serializers.Serializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.CharField()
+    user = UserSerializer(read_only=True)
     replies = RecursiveField(many=True, read_only=True)
 
     class Meta:
@@ -32,7 +33,7 @@ class CommentSerializer(serializers.ModelSerializer):
             "replies",
             "created_at",
         ]
-        read_only_fields = ["user", "created_at"]
+        read_only_fields = ["user", "post", "created_at"]
 
 
 class LikeToggleSerializer(serializers.Serializer):

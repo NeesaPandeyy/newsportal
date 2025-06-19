@@ -1,3 +1,9 @@
+from django.conf import settings
+from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.sites.models import Site
+from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, permissions, status
 from rest_framework.permissions import AllowAny
@@ -6,11 +12,14 @@ from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from users.models import CustomUser, Support
+from users.models import CustomUser, PasswordReset, Support
 
 from .serializers import (
+    ChangePasswordSerializer,
     LoginSerializer,
     RegistersSerializer,
+    ResetPasswordRequestSerializer,
+    ResetPasswordSerializer,
     SupportSerializer,
     UserSerializer,
 )
@@ -137,3 +146,107 @@ class SupportListAdminView(generics.ListAPIView):
     @swagger_auto_schema(tags=["Support"])
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+
+
+class RequestPasswordReset(generics.GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = ResetPasswordRequestSerializer
+
+    @swagger_auto_schema(
+        tags=["users"],
+    )
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        email = request.data["email"]
+        user = CustomUser.objects.filter(email__iexact=email).first()
+        current_site = Site.objects.get(name="frontend")
+        domain = current_site.domain
+
+        if user:
+            token_generator = PasswordResetTokenGenerator()
+            token = token_generator.make_token(user)
+            reset = PasswordReset(email=email, token=token)
+            reset.save()
+
+            reset_url = f"http://{domain}/reset-password/{token}"
+
+            send_mail(
+                subject="Password Reset Request",
+                message=f"Hi {user.username},\n\nClick the link below to reset your password:\n{reset_url}",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[email],
+                fail_silently=False,
+            )
+
+            return Response(
+                {"success": "We have sent you a link to reset your password"},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                {"error": "User not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+
+class ResetPassword(generics.GenericAPIView):
+    serializer_class = ResetPasswordSerializer
+
+    @swagger_auto_schema(
+        tags=["users"],
+    )
+    def post(self, request, token):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+
+        new_password = data["new_password"]
+        confirm_password = data["confirm_password"]
+
+        if new_password != confirm_password:
+            return Response({"error": "Password do not match"}, status=400)
+
+        reset_obj = PasswordReset.objects.filter(token=token).first()
+
+        if not reset_obj:
+            return Response({"error": "Invalid token"}, status=400)
+
+        user = CustomUser.objects.filter(email=reset_obj.email).first()
+
+        if user:
+            user.set_password(request.data["new_password"])
+            user.save()
+
+            reset_obj.delete()
+            return Response({"success": "Password Updated"})
+        else:
+            return Response({"error": "No user found"}, status=404)
+
+
+class ChangePasswordView(generics.GenericAPIView):
+    serializer_class = ChangePasswordSerializer
+
+    @swagger_auto_schema(
+        tags=["users"],
+    )
+    def post(self, request):
+        user = request.user
+        old_password = request.data["old_password"]
+        new_password = request.data["new_password"]
+        confirm_password = request.data["confirm_password"]
+
+        if new_password != confirm_password:
+            return Response(
+                {"error": "New password and confirm password didnt matched"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not user.check_password(old_password):
+            return Response({"error": "Current password is incorrect"}, status=400)
+        try:
+            validate_password(new_password, user=user)
+        except ValidationError as e:
+            return Response({"error": e.messages}, status=status.HTTP_400_BAD_REQUEST)
+        user.set_password(new_password)
+        user.save()
+        return Response({"success": "password changed successfully"}, status=200)

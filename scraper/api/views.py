@@ -4,7 +4,7 @@ from django.templatetags.static import static
 from django_filters import rest_framework as filters
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
@@ -51,14 +51,14 @@ class SymbolListAPIView(generics.ListAPIView):
 
 
 class StockListAPIView(generics.ListAPIView):
-    queryset = StockRecord.objects.all().order_by("id")
+    queryset = StockRecord.objects.all().order_by("-date")
     serializer_class = StockRecordSerializer
     pagination_class = CustomPagination
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = StockRecordFilter
 
-    # permission_classes = [IsAuthenticated]
-    # authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     @swagger_auto_schema(
         operation_summary="List of Scraped Stocks News",
         tags=["Scraped News"],
@@ -74,11 +74,10 @@ class SentimentListAPIView(generics.ListAPIView):
     pagination_class = CustomPagination
     queryset = StockRecord.objects.all()
 
-    # permission_classes = [IsAuthenticated]
-    # authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     @swagger_auto_schema(
         operation_summary="Sentiment of Stocks News",
-        operation_description="Get Sentiment of Stocks News",
         tags=["Scraped News"],
     )
     def get(self, request, *args, **kwargs):
