@@ -1,6 +1,5 @@
 import datetime
 import re
-import time
 
 import nepali_datetime
 from langdetect import detect
@@ -22,7 +21,6 @@ class SeleniumDriver:
         service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=options)
         driver.get(url)
-        time.sleep(1)
         return driver
 
     @staticmethod
@@ -83,42 +81,24 @@ class TextTranslator:
 
 class NewsScraping:
     @staticmethod
-    def regex_search_button(driver, name, rule):
-        regex = re.compile(r".*(Company name or symbol).*|.*search.*", re.IGNORECASE)
-
+    def search_button(driver, name, rule):
         try:
-            input_fields = driver.find_elements(By.TAG_NAME, "input")
-            for input_field in input_fields:
-                try:
-                    WebDriverWait(driver, 2).until(EC.visibility_of(input_field))
-                    placeholder = input_field.get_attribute("placeholder")
-                    if not placeholder or regex.match(placeholder):
-                        input_field.send_keys(name)
-                        input_field.send_keys(Keys.RETURN)
-                        try:
-                            if rule.click_button:
-                                a = driver.find_element(By.XPATH, rule.click_button)
-                                a.click()
-                                SeleniumDriver.handle_alert(driver)
-                        except Exception as e:
-                            print(f"Error in regrex1:{e}")
-                except Exception as e:
-                    print(f"Error in regrex2:{e}")
+            search_bar = WebDriverWait(driver, 5).until(
+                EC.presence_of_element_located((By.XPATH, rule.search_bar))
+            )
+            search_bar.clear()
+            search_bar.send_keys(name)
+            search_bar.send_keys(Keys.RETURN)
         except Exception as e:
-            print(f"Error in regrex1: {e}")
+            print(f"Error:{e}")
 
     @staticmethod
-    def news_block(driver):
+    def news_block(driver, rule):
         try:
-            ul_element = driver.find_element(By.CSS_SELECTOR, "ul.nav")
-            li_elements = ul_element.find_elements(By.TAG_NAME, "li")
-            for li in li_elements:
-                if "news" in li.text.lower():
-                    a_element = li.find_element(By.TAG_NAME, "a")
-                    driver.execute_script("arguments[0].click();", a_element)
-                    break
+            news_button = driver.find_element(By.XPATH, rule.news)
+            driver.execute_script("arguments[0].click();", news_button)
         except Exception as e:
-            print(f"Error in news block: {e}")
+            print(f"No news tab:{e}")
 
     def dropdown_control(driver):
         try:
@@ -132,7 +112,6 @@ class NewsScraping:
             print(f"Error in dropdown control: {e}")
             print("No dropdown1")
 
-        time.sleep(1)
         driver.implicitly_wait(2)
 
         try:
@@ -145,8 +124,6 @@ class NewsScraping:
         except Exception as e:
             print(f"Error in dropdown control: {e}")
             print("No dropdown2")
-
-        time.sleep(1)
 
 
 class DateConvertor:

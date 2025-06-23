@@ -11,8 +11,6 @@ from unfold.admin import ModelAdmin
 from .models import (
     Announcement,
     Keyword,
-    NewsURL,
-    NewsURLRule,
     Sector,
     StockNewsURL,
     StockNewsURLRule,
@@ -124,12 +122,6 @@ class StockNewsURLRuleAdmin(ModelAdmin):
     search_fields = ("url",)
 
 
-@admin.register(NewsURLRule)
-class NewsURLRuleAdmin(ModelAdmin):
-    list_display = ["url"]
-    search_fields = ("url",)
-
-
 @admin.register(Announcement)
 class AnnouncementAdmin(ModelAdmin):
     list_display = ("id", "date", "url", "announcement", "tags")
@@ -139,4 +131,3 @@ class AnnouncementAdmin(ModelAdmin):
 
 
 admin.site.register(StockNewsURL)
-admin.site.register(NewsURL)

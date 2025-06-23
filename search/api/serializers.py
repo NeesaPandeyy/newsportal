@@ -6,10 +6,10 @@ from ..documents import NewsPostIndex, StockRecordIndex
 class NewsPostIndexSerializer(DocumentSerializer):
     class Meta:
         document = NewsPostIndex
-        fields = ("title", "description", "category", "tags")
+        fields = ("title", "description", "category", "tags", "slug")
 
 
 class StockRecordIndexSerializer(DocumentSerializer):
     class Meta:
         document = StockRecordIndex
-        fields = ("title", "summary", "symbol", "keywords")
+        fields = ("title", "summary", "symbol", "keywords", "slug")

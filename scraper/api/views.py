@@ -56,11 +56,9 @@ class StockListAPIView(generics.ListAPIView):
     pagination_class = CustomPagination
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = StockRecordFilter
-
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-        operation_summary="List of Scraped Stocks News",
         tags=["Scraped News"],
     )
     def get(self, request, *args, **kwargs):
@@ -73,11 +71,9 @@ class SentimentListAPIView(generics.ListAPIView):
     filterset_class = StockRecordFilter
     pagination_class = CustomPagination
     queryset = StockRecord.objects.all()
-
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-        operation_summary="Sentiment of Stocks News",
         tags=["Scraped News"],
     )
     def get(self, request, *args, **kwargs):

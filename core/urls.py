@@ -53,6 +53,7 @@ urlpatterns = (
         path("api/notification/", include("notifications.api.urls")),
         path("api/news/", include("news.api.urls")),
         path("api/search/", include("search.api.urls")),
+        path("search/", include("search.urls")),
         path("accounts/", include("allauth.urls")),
         path("accounts/nepsetrend/", include("nepseauth.urls")),
         path("ckeditor/", include("ckeditor_uploader.urls")),

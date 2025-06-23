@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Renewable Energy Investment Surges in Nepal Amid Climate Goals",
+    "description": "<p>Nepal is witnessing a surge in renewable energy investments as part of its commitment to climate change mitigation and sustainable development. Solar, wind, and hydropower projects are attracting both domestic and international investors looking to capitalize on Nepal’s abundant natural resources.</p><p>Government incentives, such as tax breaks and streamlined licensing processes, have facilitated project development. Public-private partnerships play a crucial role in scaling capacity while ensuring environmental safeguards.</p><p>The increase in renewable energy capacity is expected to reduce Nepal’s reliance on imported fossil fuels, improve energy security, and create green jobs. Community-based projects empower local populations and foster inclusive growth.</p><p>Despite progress, challenges remain in grid integration, financing, and technology adoption. Continued policy support, innovation, and capacity building are essential to sustain momentum.</p><p>Renewable energy growth positions Nepal as a regional leader in clean energy and contributes significantly to its Nationally Determined Contributions under the Paris Agreement.</p>",
+    "tags": ["renewable energy", "climate goals", "investment", "solar", "hydropower"],
+    "category": "Environment"
+  },
+  {
+    "title": "Tech Startups in Nepal Attract Global Attention",
+    "description": "<p>The Nepalese tech startup ecosystem is rapidly expanding, catching the attention of global investors and accelerators. Innovative companies specializing in AI, fintech, e-commerce, and healthtech are emerging from Kathmandu, Pokhara, and beyond.</p><p>Government initiatives such as startup incubators, tax incentives, and ease of business reforms have created a supportive environment. Partnerships with universities and research institutions fuel talent development and innovation.</p><p>International venture capital funds and angel investors are increasingly participating in funding rounds, drawn by Nepal’s growing internet penetration and youthful demographic.</p><p>Despite infrastructure and regulatory challenges, success stories of startups scaling regionally inspire entrepreneurship and ecosystem growth.</p><p>The tech startup boom is contributing to job creation, digital inclusion, and economic diversification in Nepal.</p>",
+    "tags": ["startups", "technology", "investment", "AI", "fintech"],
+    "category": "Technology"
+  },
+  {
+    "title": "Government Launches New Health Insurance Scheme for Rural Areas",
+    "description": "<p>In a bid to improve healthcare accessibility, the Nepalese government has launched a new health insurance scheme targeting rural populations. The initiative aims to reduce out-of-pocket medical expenses and promote preventive care.</p><p>The program covers primary care, hospitalization, maternity benefits, and essential medicines. Community health workers play a pivotal role in enrollment and awareness campaigns.</p><p>Partnerships with local clinics and hospitals ensure service availability and quality. The scheme is subsidized for low-income families and vulnerable groups.</p><p>Initial pilot phases report increased healthcare utilization and reduced financial hardship. Challenges include administrative capacity, fraud prevention, and service delivery expansion.</p><p>The health insurance scheme aligns with Nepal’s commitment to universal health coverage and Sustainable Development Goals.</p>",
+    "tags": ["health insurance", "rural health", "government policy", "healthcare access", "public health"],
+    "category": "Health"
+  },
+  {
+    "title": "Nepal’s Tourism Sector Eyes Recovery Post-Pandemic",
+    "description": "<p>After being severely impacted by the COVID-19 pandemic, Nepal’s tourism sector is showing signs of recovery. Domestic and international travel restrictions are easing, and visitor arrivals are gradually increasing.</p><p>Tourism businesses are adapting by enhancing safety protocols, diversifying offerings, and adopting digital marketing strategies. Adventure tourism, cultural heritage sites, and eco-tourism remain key attractions.</p><p>The government is promoting tourism through campaigns, infrastructure development, and incentives for sustainable practices. Community-based tourism initiatives foster local engagement and benefit-sharing.</p><p>Challenges such as climate change impacts, infrastructure deficits, and global economic uncertainties persist. Stakeholders emphasize the need for resilience planning and innovation.</p><p>Tourism recovery is critical for Nepal’s economy, supporting livelihoods and fostering cultural exchange.</p>",
+    "tags": ["tourism", "economic recovery", "travel", "sustainability", "Nepal"],
+    "category": "Economy"
+  },
+  {
+    "title": "Education Sector Embraces Digital Learning Post-Pandemic",
+    "description": "<p>The education sector in Nepal is undergoing a digital transformation accelerated by the COVID-19 pandemic. Schools and universities have adopted online platforms, digital content, and remote teaching methods to ensure continuity of learning.</p><p>Government and private initiatives support infrastructure development, teacher training, and content localization. Efforts focus on inclusivity to reach students in remote and underserved areas.</p><p>Challenges such as limited internet access, digital literacy gaps, and resource constraints require ongoing attention. Blended learning models combining online and in-person instruction are emerging as sustainable solutions.</p><p>The shift to digital education offers opportunities for personalized learning, skill development, and global connectivity.</p><p>As Nepal rebuilds its education system, integrating technology will be key to enhancing quality and equity.</p>",
+    "tags": ["education", "digital learning", "technology", "schools", "remote learning"],
+    "category": "Education"
+  }
+]

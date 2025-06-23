@@ -14,6 +14,7 @@ class NewsPostIndex(Document):
     description = fields.TextField()
     category = fields.KeywordField()
     tags = fields.KeywordField(multi=True)
+    slug = fields.TextField()
 
     class Index:
         name = "news_posts"
@@ -39,6 +40,7 @@ class StockRecordIndex(Document):
     keywords = fields.KeywordField(multi=True)
     title = fields.TextField()
     summary = fields.TextField()
+    slug = fields.TextField()
 
     class Index:
         name = "stock_records"

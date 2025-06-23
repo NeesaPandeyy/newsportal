@@ -14,7 +14,7 @@ class SearchAllView(TemplateView):
         q_news = Q(
             "multi_match",
             query=query,
-            fields=["title", "description", "tags"],
+            fields=["title", "description", "tags", "category"],
             fuzziness="auto",
         )
         search = NewsPostIndex.search().query(q_news)[:50]

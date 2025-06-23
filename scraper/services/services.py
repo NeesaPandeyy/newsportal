@@ -1,6 +1,5 @@
 import concurrent.futures
 import datetime
-import re
 import time
 
 import matplotlib
@@ -8,7 +7,10 @@ import matplotlib
 matplotlib.use("Agg")
 
 from googletrans import Translator
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 from scraper.models import StockNewsURL, StockNewsURLRule, StockRecord, Symbol
 
@@ -25,7 +27,7 @@ class StockNews:
         start = time.perf_counter()
         stock_list = []
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
             stock_futures = {}
 
             for symbol in symbols:
@@ -71,10 +73,10 @@ class StockNews:
             rule = StockNewsURLRule.objects.filter(url=url).first()
             driver = SeleniumDriver.start_selenium(url.url)
             SeleniumDriver.handle_alert(driver)
-            NewsScraping.regex_search_button(driver, key_word, rule)
+            NewsScraping.search_button(driver, key_word, rule)
 
             try:
-                NewsScraping.news_block(driver)
+                NewsScraping.news_block(driver, rule)
             except Exception as e:
                 print(f"Error in news_block: {e}")
 
@@ -108,27 +110,29 @@ class StockNews:
     def news_extraction(self, driver, rule):
         all_news = {}
         try:
-            if rule.main_div:
-                regex_class = re.compile(r".*news.*", re.IGNORECASE)
-                main_div = driver.find_elements(By.TAG_NAME, rule.main_div)
-                for div in main_div:
-                    div_class = div.get_attribute("id")
-                    if regex_class.search(div_class):
-                        tbody = div.find_element(By.TAG_NAME, rule.tbody)
-                        rows = tbody.find_elements(By.TAG_NAME, rule.rows)
-                        for row in rows:
-                            link_element = row.find_element(By.TAG_NAME, "a")
-                            link_url = link_element.get_attribute("href")
-                            if not StockRecord.objects.filter(url=link_url).exists():
-                                new_driver = SeleniumDriver.start_selenium(link_url)
-                                time.sleep(5)
-                                content = self.detail_content(new_driver, rule)
-                                all_news[link_url] = content
-            else:
-                div_list = driver.find_element(By.XPATH, rule.div_list)
-                rows = div_list.find_elements(By.TAG_NAME, "a")
+            main_div = WebDriverWait(driver, 5).until(
+                EC.presence_of_element_located((By.XPATH, rule.main_div))
+            )
+        except Exception:
+            print("Main div not found.")
+        try:
+            if rule.rows:
+                rows = main_div.find_elements(By.TAG_NAME, rule.rows)
                 for row in rows:
-                    link_url = row.get_attribute("href")
+                    try:
+                        a_tag = row.find_element(By.TAG_NAME, "a")
+                        link_url = a_tag.get_attribute("href")
+                        if not StockRecord.objects.filter(url=link_url).exists():
+                            new_driver = SeleniumDriver.start_selenium(link_url)
+                            time.sleep(2)
+                            content = self.detail_content(new_driver, rule)
+                            all_news[link_url] = content
+                    except NoSuchElementException:
+                        continue
+            else:
+                a_tags = main_div.find_elements(By.TAG_NAME, "a")
+                for a in a_tags:
+                    link_url = a.get_attribute("href")
                     if not StockRecord.objects.filter(url=link_url).exists():
                         new_driver = SeleniumDriver.start_selenium(link_url)
                         time.sleep(5)
