@@ -256,16 +256,6 @@ UNFOLD = {
                         ),
                     },
                     {
-                        "title": _("News URL"),
-                        "icon": "link",
-                        "link": reverse_lazy("admin:scraper_newsurl_changelist"),
-                    },
-                    {
-                        "title": _("News URL Rule"),
-                        "icon": "rule",
-                        "link": reverse_lazy("admin:scraper_newsurlrule_changelist"),
-                    },
-                    {
                         "title": _("Stock Record"),
                         "icon": "assessment",
                         "link": reverse_lazy("admin:scraper_stockrecord_changelist"),

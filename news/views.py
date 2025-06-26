@@ -9,7 +9,7 @@ def create_news_view(request):
         form = NewsPostAdminForm(request.POST)
         if form.is_valid():
             news = form.save(commit=False)
-            news.creator = request.user
+            news.user = request.user
             news.save()
             form.save_m2m()
             return redirect("news-list")

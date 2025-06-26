@@ -9,7 +9,7 @@ from selenium.webdriver.common.by import By
 
 from scraper.models import Announcement
 
-from ..utils import SeleniumDriver
+from .selenium_driver import SeleniumDriver
 
 
 class AnnouncementScraper:

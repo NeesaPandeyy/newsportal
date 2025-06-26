@@ -42,13 +42,13 @@ class NewsPostAdmin(ModelAdmin):
         "category",
         "status",
         "get_tags",
-        "creator",
+        "user",
         "likes_count",
         "created_at",
         "updated_at",
     )
     list_filter = ("status", "category", "tags")
-    search_fields = ("title", "description", "creator__username")
+    search_fields = ("title", "description", "user__username")
     autocomplete_fields = ("category",)
     readonly_fields = ("created_at", "updated_at")
     actions = ["approve_news", "reject_news"]
@@ -65,7 +65,7 @@ class NewsPostAdmin(ModelAdmin):
         if user.is_superuser:
             return qs
 
-        return qs.filter(creator=user)
+        return qs.filter(user=user)
 
     def approve_news(self, request, queryset):
         updated = queryset.update(status=NewsPost.NewsStatus.APPROVED)
@@ -85,8 +85,8 @@ class NewsPostAdmin(ModelAdmin):
         return super().get_readonly_fields(request, obj)
 
     def save_model(self, request, obj, form, change):
-        if not obj.creator_id:
-            obj.creator = request.user
+        if not obj.user_id:
+            obj.user = request.user
         super().save_model(request, obj, form, change)
 
 
@@ -105,7 +105,7 @@ class LikeAdmin(ModelAdmin):
         if user.is_superuser:
             return qs.filter(post__status=NewsPost.NewsStatus.PUBLISHED)
 
-        return qs.filter(post__creator=user, post__status=NewsPost.NewsStatus.PUBLISHED)
+        return qs.filter(post__user=user, post__status=NewsPost.NewsStatus.PUBLISHED)
 
     def get_search_results(self, request, queryset, search_term):
         filtered_qs = queryset.filter(post__status=NewsPost.NewsStatus.PUBLISHED)

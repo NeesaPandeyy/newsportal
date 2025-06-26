@@ -29,7 +29,7 @@ def send_welcome_email(sender, instance, created, **kwargs):
 def notify_like(sender, instance, created, **kwargs):
     if created:
         create_notification(
-            recipient=instance.post.creator,
+            recipient=instance.post.user,
             actor=instance.user,
             verb="liked your post",
             target=instance.post,
@@ -39,9 +39,9 @@ def notify_like(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Comment)
 def notify_comment(sender, instance, created, **kwargs):
     if created:
-        if instance.post.creator != instance.user:
+        if instance.post.user != instance.user:
             create_notification(
-                recipient=instance.post.creator,
+                recipient=instance.post.user,
                 actor=instance.user,
                 verb="commented on your post",
                 target=instance.post,
@@ -58,11 +58,11 @@ def notify_comment(sender, instance, created, **kwargs):
 @receiver(post_save, sender=NewsPost)
 def notify_post(sender, instance, created, **kwargs):
     if created and instance.status == "published":
-        recipients = User.objects.exclude(id=instance.creator.id)
+        recipients = User.objects.exclude(id=instance.user.id)
         for user in recipients:
             create_notification(
                 recipient=user,
-                actor=instance.creator,
+                actor=instance.user,
                 verb="posted a new post",
                 target=instance,
             )
@@ -71,7 +71,7 @@ def notify_post(sender, instance, created, **kwargs):
 @receiver(post_save, sender=NewsPost)
 def notify_newpost_mail(sender, instance, created, **kwargs):
     if created and instance.status == "published":
-        users = User.objects.exclude(id=instance.creator.id)
+        users = User.objects.exclude(id=instance.user.id)
         subject = f"New Post:{instance.title}"
 
         def resize_images(html):

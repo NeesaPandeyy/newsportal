@@ -57,6 +57,7 @@ class NewsSerializer(TaggitSerializer, serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
+        read_only_fields = ["slug", "likes_count", "created_at", "updated_at"]
 
     def to_representation(self, instance):
         data = super().to_representation(instance)

@@ -67,7 +67,7 @@ class NewsCreateAPIView(generics.CreateAPIView):
         tags=["Custom News"],
     )
     def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
+        serializer.save(user=self.request.user)
 
 
 class PublishedNewsView(generics.ListAPIView):
@@ -137,7 +137,6 @@ class LikeView(APIView):
             openapi.Parameter(
                 "post_id",
                 openapi.IN_PATH,
-                description="ID of the post to like/unlike",
                 type=openapi.TYPE_INTEGER,
             )
         ],

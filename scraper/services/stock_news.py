@@ -14,7 +14,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from scraper.models import StockNewsURL, StockNewsURLRule, StockRecord, Symbol
 
-from ..utils import DateConvertor, NewsScraping, SeleniumDriver, TextTranslator
+from ..utils.date_convertor import DateConvertor
+from ..utils.text_translator import TextTranslator
+from .news_scraping import NewsScraping
+from .selenium_driver import SeleniumDriver
 
 
 class StockNews:
@@ -27,7 +30,7 @@ class StockNews:
         start = time.perf_counter()
         stock_list = []
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
             stock_futures = {}
 
             for symbol in symbols:
@@ -56,7 +59,7 @@ class StockNews:
             if not StockRecord.objects.filter(url=item["url"]).exists():
                 symbol_instance = Symbol.objects.filter(name=item["symbol"]).first()
                 if symbol_instance:
-                    stock_record = StockRecord.objects.create(
+                    stock_record = StockRecord.objects.create(  # noqa
                         symbol=symbol_instance,
                         title=item.get("title", ""),
                         url=item["url"],
@@ -117,6 +120,9 @@ class StockNews:
             print("Main div not found.")
         try:
             if rule.rows:
+                WebDriverWait(driver, 5).until(
+                    lambda d: main_div.find_elements(By.TAG_NAME, rule.rows)
+                )
                 rows = main_div.find_elements(By.TAG_NAME, rule.rows)
                 for row in rows:
                     try:
@@ -135,7 +141,7 @@ class StockNews:
                     link_url = a.get_attribute("href")
                     if not StockRecord.objects.filter(url=link_url).exists():
                         new_driver = SeleniumDriver.start_selenium(link_url)
-                        time.sleep(5)
+                        time.sleep(2)
                         content = self.detail_content(new_driver, rule)
                         all_news[link_url] = content
         except Exception as e:
@@ -166,12 +172,9 @@ class StockNews:
                 summary = driver.find_element(
                     By.CLASS_NAME, rule.summary_class
                 ).text.replace("\n", " ")
-            translated_title, _ = TextTranslator.translate_text(
-                headline, self.translator
-            )
-            translated_summary, _ = TextTranslator.translate_text(
-                summary, self.translator
-            )
+            translated_title = TextTranslator.translate_text(headline, self.translator)
+            translated_summary = TextTranslator.translate_text(summary, self.translator)
+
             content[translated_title] = {
                 "summary": translated_summary,
                 "date": date,

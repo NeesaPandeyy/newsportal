@@ -11,6 +11,7 @@ stock_record_index = Index("stock_records")
 @registry.register_document
 class NewsPostIndex(Document):
     title = fields.TextField()
+    title_suggest = fields.CompletionField()
     description = fields.TextField()
     category = fields.KeywordField()
     tags = fields.KeywordField(multi=True)
@@ -33,12 +34,17 @@ class NewsPostIndex(Document):
     def prepare_tags(self, instance):
         return [tag.name for tag in instance.tags.all()]
 
+    def prepare_title_suggest(self, instance):
+        return {"input": [instance.title]}
+
 
 @registry.register_document
 class StockRecordIndex(Document):
     symbol = fields.KeywordField()
     keywords = fields.KeywordField(multi=True)
     title = fields.TextField()
+    title_suggest = fields.CompletionField()
+
     summary = fields.TextField()
     slug = fields.TextField()
 
@@ -58,3 +64,6 @@ class StockRecordIndex(Document):
 
     def prepare_keywords(self, instance):
         return [kw.word for kw in instance.keywords.all()]
+
+    def prepare_title_suggest(self, instance):
+        return {"input": [instance.title]}

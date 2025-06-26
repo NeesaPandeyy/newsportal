@@ -1,8 +1,7 @@
 from celery import shared_task
 
 from .services.announcement import AnnouncementScraper
-from .services.news import News
-from .services.services import StockNews
+from .services.stock_news import StockNews
 
 
 @shared_task(name="stock scheduling")
@@ -15,9 +14,3 @@ def stocknews_scraping():
 def announcement_scraping():
     announcement = AnnouncementScraper()
     return announcement.extract_announcement()
-
-
-@shared_task(name="news scheduling")
-def news_scraping():
-    scrape = News()
-    return scrape.news()

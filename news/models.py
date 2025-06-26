@@ -68,7 +68,7 @@ class NewsPost(TimestampAbstractModel, models.Model):
         choices=NewsStatus.choices,
         default=NewsStatus.DRAFT,
     )
-    creator = models.ForeignKey(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         editable=False,

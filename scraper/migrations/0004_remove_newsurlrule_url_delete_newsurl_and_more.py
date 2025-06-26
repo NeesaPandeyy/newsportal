@@ -4,20 +4,19 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('scraper', '0003_alter_stocknewsurlrule_main_div_and_more'),
+        ("scraper", "0003_alter_stocknewsurlrule_main_div_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='newsurlrule',
-            name='url',
+            model_name="newsurlrule",
+            name="url",
         ),
         migrations.DeleteModel(
-            name='NewsURL',
+            name="NewsURL",
         ),
         migrations.DeleteModel(
-            name='NewsURLRule',
+            name="NewsURLRule",
         ),
     ]
